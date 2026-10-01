@@ -82,6 +82,7 @@ export interface OpportunityAlert {
   source: string;
   contactEmail?: string | null;
   contactHandle?: string | null;
+  seenCount?: number | null;
 }
 
 export async function notifyOpportunity(op: OpportunityAlert): Promise<boolean> {
@@ -104,6 +105,11 @@ export async function notifyOpportunity(op: OpportunityAlert): Promise<boolean> 
   if (op.location) meta.push(`📍 ${esc(op.location)}`);
   if (meta.length > 0) {
     lines.push(meta.join(" · "));
+  }
+
+  // Found on multiple boards → stronger signal, worth showing.
+  if ((op.seenCount ?? 1) > 1) {
+    lines.push(`🔁 <b>Seen on ${op.seenCount} sources</b> — corroborated opportunity`);
   }
 
   if (op.budget) {

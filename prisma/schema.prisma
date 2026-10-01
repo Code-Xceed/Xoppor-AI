@@ -32,6 +32,7 @@ model Lead {
   signals       String? // JSON array of buying signals detected
   skills        String? // JSON array of your skills that matched
   notifiedAt    DateTime? // when dispatched to telegram as opportunity alert
+  seenCount     Int       @default(1) // how many sources listed this same opportunity
 
   @@unique([source, externalId])
   @@index([status, score])

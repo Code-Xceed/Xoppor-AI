@@ -35,7 +35,7 @@
     "score": "tsx --env-file=.env scripts/run-pipeline.ts score",
     "digest": "tsx --env-file=.env scripts/run-pipeline.ts digest",
     "benchmark": "tsx --env-file=.env scripts/benchmark.ts",
-    "test": "node --import tsx --test tests/ai.test.ts tests/devpost.test.ts tests/filter.test.ts tests/heuristic.test.ts tests/internships.test.ts tests/rss.test.ts",
+    "test": "node --import tsx --test tests/ai.test.ts tests/devpost.test.ts tests/dedupe.test.ts tests/filter.test.ts tests/heuristic.test.ts tests/internships.test.ts tests/rss.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

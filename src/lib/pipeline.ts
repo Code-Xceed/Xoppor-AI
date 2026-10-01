@@ -5,6 +5,7 @@ import { aiStatus, scoreLead } from "./ai";
 import { config, hasTelegram } from "./config";
 import { SCOUTS, type ScoutResult } from "./scouts";
 import { extractEmails } from "./scouts/filter";
+import { isDuplicate, urlKey } from "./dedupe";
 import { createLogger } from "./logger";
 import { notifyDigest, notifyOpportunity } from "./telegram";
 
@@ -24,11 +25,36 @@ export async function runScouts(): Promise<{ results: ScoutResult[]; newLeads: n
     try {
       const signals = await scout.run();
       for (const sig of signals) {
+        // 1. Already have this exact signal? Skip.
         const exists = await db.lead.findUnique({
           where: { source_externalId: { source: sig.source, externalId: sig.externalId } },
           select: { id: true },
         });
         if (exists) continue;
+
+        // 2. Cross-source duplicate? Same opportunity on another board —
+        // bump its seenCount (and boost its score if already scored).
+        const key = urlKey(sig.url);
+        const candidates = await db.lead.findMany({
+          where: {
+            source: { not: sig.source },
+            ...(key ? { url: { contains: key } } : {}),
+          },
+          select: { id: true, title: true, url: true, company: true, score: true, seenCount: true },
+          take: 25,
+        });
+        const twin = candidates.find((c) => isDuplicate({ title: sig.title, url: sig.url, company: sig.company }, c));
+        if (twin) {
+          await db.lead.update({
+            where: { id: twin.id },
+            data: {
+              seenCount: { increment: 1 },
+              // Already scored → each extra sighting nudges it up (max 100).
+              ...(twin.score > 0 ? { score: Math.min(100, twin.score + 5) } : {}),
+            },
+          });
+          continue;
+        }
         try {
           await db.lead.create({
             data: {
@@ -87,7 +113,10 @@ export async function runScoring(limit = 20): Promise<{ scored: number; hot: num
     );
     await Promise.all(
       results.map(async ({ lead, result }) => {
-        const isHot = result.score >= config.minOpportunityScore;
+        // Multi-source corroboration: +5 per extra board that listed the same
+        // opportunity (max +10). Real openings get posted in more than one place.
+        const score = Math.min(100, result.score + Math.max(0, Math.min(10, (lead.seenCount - 1) * 5)));
+        const isHot = score >= config.minOpportunityScore;
         let notified = false;
 
         if (isHot && hasTelegram()) {
@@ -104,7 +133,7 @@ export async function runScoring(limit = 20): Promise<{ scored: number; hot: num
               title: lead.title,
               company: lead.company,
               category: lead.category,
-              score: result.score,
+              score,
               scoreReason: result.reason,
               skills: result.matchedSkills,
               signals: result.signals,
@@ -116,6 +145,7 @@ export async function runScoring(limit = 20): Promise<{ scored: number; hot: num
               source: lead.source,
               contactEmail: lead.contactEmail,
               contactHandle: lead.contactHandle,
+              seenCount: lead.seenCount,
             });
             if (notified) alerted++;
           } catch (err) {
@@ -126,7 +156,7 @@ export async function runScoring(limit = 20): Promise<{ scored: number; hot: num
         await db.lead.update({
           where: { id: lead.id },
           data: {
-            score: result.score,
+            score,
             scoreReason: result.reason,
             skills: JSON.stringify(result.matchedSkills),
             signals: JSON.stringify(result.signals),
@@ -186,6 +216,7 @@ export async function alertPendingOpportunities(limit = 10): Promise<number> {
       source: lead.source,
       contactEmail: lead.contactEmail,
       contactHandle: lead.contactHandle,
+      seenCount: lead.seenCount,
     });
 
     if (ok) {
