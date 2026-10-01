@@ -1,0 +1,49 @@
+// Xoppor AI — opportunity radar database schema (SQLite)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id            String    @id @default(cuid())
+  source        String // remoteok|remotive|hackernews|weworkremotely|jobicy|himalayas|arbeitnow|larajobs|nodesk|cryptojobs|reddit|devpost|conferences|bounties|internships|manual
+  externalId    String
+  category      String    @default("job") // job|freelance|internship|hackathon|event|bounty
+  title         String
+  company       String?
+  description   String?
+  url           String
+  location      String?
+  budget        String? // salary, prize pool, bounty amount
+  deadline      DateTime? // hackathon/event/CFP deadline — drives timely alerts
+  contactEmail  String?
+  contactHandle String? // reddit/hn/github username
+  tags          String? // JSON array of raw tags from the source
+  postedAt      DateTime?
+  discoveredAt  DateTime  @default(now())
+  status        String    @default("new") // new|qualified|rejected|archived
+  score         Int       @default(0)
+  scoreReason   String?
+  signals       String? // JSON array of buying signals detected
+  skills        String? // JSON array of your skills that matched
+  notifiedAt    DateTime? // when dispatched to telegram as opportunity alert
+
+  @@unique([source, externalId])
+  @@index([status, score])
+  @@index([discoveredAt])
+  @@index([notifiedAt])
+  @@index([deadline])
+}
+
+model RunLog {
+  id        String   @id @default(cuid())
+  runType   String // scout | score | digest
+  ok        Boolean
+  summary   String?
+  createdAt DateTime @default(now())
+}

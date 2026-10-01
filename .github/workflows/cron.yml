@@ -1,0 +1,48 @@
+name: Xoppor AI pipeline
+
+on:
+  schedule:
+    - cron: "*/30 * * * *" # every 30 min on GitHub's free hosted runner
+  workflow_dispatch: {} # manual trigger from the Actions tab
+
+permissions:
+  contents: write # needed to persist the SQLite DB back to the repo
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Prepare database
+        run: npx prisma db push --skip-generate
+        env:
+          DATABASE_URL: "file:./dev.db"
+
+      - name: Run pipeline (scout → score → alert)
+        env:
+          DATABASE_URL: "file:./dev.db"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MIN_OPPORTUNITY_SCORE: ${{ secrets.MIN_OPPORTUNITY_SCORE }}
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+        run: npm run pipeline
+
+      # Persist the SQLite DB between runs so leads are not re-discovered.
+      - name: Commit database back
+        run: |
+          git config user.name "xoppor-bot"
+          git config user.email "actions@localhost"
+          git add -f prisma/dev.db
+          git diff --cached --quiet && echo "No DB changes" || (git commit -m "chore: update lead db [skip ci]" && git push)

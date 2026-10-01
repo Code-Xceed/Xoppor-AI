@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+
+# production
+build/
+
+# database
+prisma/*.db
+prisma/*.db-journal
+
+# env — never commit your keys
+.env*
+!.env.example
+
+# misc
+.dev-server.log
+.DS_Store
+*.pem
+npm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
+
+# local planning notes — keep private, never publish
+CLIENT-HUNTER-PRODUCT-SPEC.md

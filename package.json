@@ -1,0 +1,57 @@
+{
+  "name": "xoppor-ai",
+  "version": "1.0.0",
+  "description": "🛰 AI opportunity radar — scouts 15 sources for jobs, freelance gigs, internships, hackathons, conferences & bounties, scores them with AI, and pushes alerts to Telegram. Research radar only — zero outreach.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Code-Xceed/Xoppor-AI.git"
+  },
+  "keywords": [
+    "job-search",
+    "freelance",
+    "hackathon",
+    "bounties",
+    "internships",
+    "opportunity-radar",
+    "gemini",
+    "telegram-bot",
+    "nextjs",
+    "prisma"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "setup": "tsx scripts/setup.ts",
+    "pipeline": "tsx --env-file=.env scripts/run-pipeline.ts all",
+    "scout": "tsx --env-file=.env scripts/run-pipeline.ts scout",
+    "score": "tsx --env-file=.env scripts/run-pipeline.ts score",
+    "digest": "tsx --env-file=.env scripts/run-pipeline.ts digest",
+    "benchmark": "tsx --env-file=.env scripts/benchmark.ts",
+    "test": "node --import tsx --test tests/ai.test.ts tests/devpost.test.ts tests/filter.test.ts tests/heuristic.test.ts tests/internships.test.ts tests/rss.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.10.0",
+    "next": "^15.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "prisma": "^6.10.0",
+    "tailwindcss": "^4.1.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0"
+  }
+}
