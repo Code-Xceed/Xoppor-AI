@@ -8,5 +8,5 @@ export async function GET(req: Request) {
   if (!authorize(req)) return unauthorized();
   const stats = await getStats();
   const ai = await aiStatus();
-  return json({ stats, ai, mailer: "disabled (research radar)" });
+  return json({ stats, ai });
 }

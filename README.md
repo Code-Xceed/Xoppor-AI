@@ -35,7 +35,7 @@ Xoppor AI is a **pure research radar — not an outreach tool**. It rigorously s
     • SimplifyJobs lists (2000+ internships)
 ```
 
-> **Research only, zero auto-messaging.** Xoppor AI never applies or messages anyone. It finds, filters, scores, and alerts — you decide what to act on, on your terms.
+> **Research only, zero auto-messaging.** Xoppor AI finds, filters, scores, and alerts — the apply button stays firmly in your hands.
 
 ---
 
@@ -94,7 +94,7 @@ npm run dev            # dashboard at http://localhost:3000
 🛰  Xoppor AI setup
 
   Your name?
-  > Aditya
+  > Alex
   Your role / title? (e.g. Fullstack Developer, Data Analyst, Video Editor)
   > Fullstack Developer & AI Engineer
   Specialties? (e.g. 'React & Next.js apps, AI integrations, SaaS MVPs')
@@ -321,7 +321,7 @@ Everything except `DATABASE_URL` is optional. `npm run setup` writes this file f
 ## ❓ FAQ
 
 **Is this an outreach / cold-messaging tool?**
-No — deliberately. Xoppor AI is a **research radar**: it finds, scores and alerts. It never applies, emails, or messages anyone. You act on opportunities manually, on your terms.
+No — deliberately. Xoppor AI is a **research radar**: it finds, scores and alerts, then gets out of the way. Nothing is ever sent, applied or messaged on your behalf.
 
 **Does it cost anything?**
 $0. Every source is a free public API, Gemini's free tier handles scoring, GitHub Actions runners are free, and SQLite needs no database server.

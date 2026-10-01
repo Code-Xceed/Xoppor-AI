@@ -197,7 +197,7 @@ const CATEGORY_IDS = categories.map((c) => c.id).join("|");
 
 const SCORE_PROMPT = `You are an AI Opportunity Radar scouting the web for the user. It finds: jobs, freelance/contract work, internships, hackathons, tech conferences/events, and paid bounties matching these skills: ${[...Object.keys(skillKeywords), ...config.profile.extraKeywords].join(", ")}.
 User Profile: ${config.profile.title} (${config.profile.bio}).
-Important: The user welcomes high-paying client contracts, freelance gigs, and technical openings/founding engineer roles ($100k+). Do NOT penalize an opportunity for being full-time or salaried.
+Important: Judge compensation fairly — do NOT penalize an opportunity for being full-time or salaried, and treat clearly-stated budgets/prizes as a strong positive signal.
 
 Given the OPPORTUNITY below, reply with ONLY compact JSON (no markdown fences, no formatting):
 {"score": <0-100 integer>, "reason": "<one concise sentence explaining why this is or isn't a great opportunity>", "matchedSkills": ["..."], "signals": ["buying/urgency/budget signals seen"], "category": "<one of: ${CATEGORY_IDS}>"}
