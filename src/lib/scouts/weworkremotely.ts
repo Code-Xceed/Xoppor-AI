@@ -4,7 +4,7 @@
  */
 
 import type { Scout, ScoutSignal } from "./types";
-import { clampText, extractEmails, matchesSkills, safeFetch } from "./filter";
+import { clampText, extractBudget, extractEmails, matchesSkills, safeFetch } from "./filter";
 import { parseRssItems } from "./rss";
 
 const FEEDS = [
@@ -46,6 +46,7 @@ export const weWorkRemotelyScout: Scout = {
           title: position.slice(0, 200),
           company: company?.slice(0, 120),
           description: clampText(item.description),
+          budget: extractBudget(`${item.title} ${item.description}`),
           url: item.link,
           location: "Remote",
           contactEmail: extractEmails(item.description)[0],

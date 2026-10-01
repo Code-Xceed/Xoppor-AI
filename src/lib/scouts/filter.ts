@@ -104,3 +104,12 @@ export function extractEmails(text: string | undefined | null): string[] {
   }
   return valid;
 }
+
+export function extractBudget(text: string | undefined | null): string | undefined {
+  if (!text) return undefined;
+  const match = text.match(
+    /(?:(?:\$|€|£|USD\s*)\s*\d{1,3}(?:[,\.]\d{3})*(?:\s*k)?(?:\s*(?:-|–|—|to)\s*(?:\$|€|£|USD\s*)?\s*\d{1,3}(?:[,\.]\d{3})*(?:\s*k)?|\s*\/(?:hr|hour|mo|yr|year|month))|(?:\$|€|£)\s*\d{2,3}k(?:\s*(?:-|–|—|to)\s*(?:\$|€|£)?\s*\d{2,3}k)?)/i
+  );
+  return match ? match[0].trim() : undefined;
+}
+

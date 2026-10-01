@@ -12,6 +12,7 @@ import { arbeitnowScout } from "./arbeitnow";
 import { laraJobsScout } from "./larajobs";
 import { noDeskScout } from "./nodesk";
 import { cryptoJobsScout } from "./cryptojobs";
+import { workingNomadsScout } from "./workingnomads";
 import { devpostScout } from "./devpost";
 import { conferencesScout } from "./conferences";
 import { bountiesScout } from "./bounties";
@@ -28,6 +29,7 @@ export const SCOUTS: Scout[] = [
   laraJobsScout,
   noDeskScout,
   cryptoJobsScout,
+  workingNomadsScout,
   redditScout,
   devpostScout,
   conferencesScout,

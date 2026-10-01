@@ -4,7 +4,7 @@
  */
 
 import type { Scout, ScoutSignal } from "./types";
-import { clampText, extractEmails, matchesSkills, safeFetch } from "./filter";
+import { clampText, extractBudget, extractEmails, matchesSkills, safeFetch } from "./filter";
 import { parseRssItems } from "./rss";
 
 export const jobicyScout: Scout = {
@@ -20,14 +20,19 @@ export const jobicyScout: Scout = {
     for (const item of items) {
       if (!matchesSkills(`${item.title} ${item.description}`)) continue;
 
+      const atIdx = item.title.lastIndexOf(" at ");
+      const position = atIdx !== -1 ? item.title.slice(0, atIdx).trim() : item.title;
+      const company = atIdx !== -1 ? item.title.slice(atIdx + 4).trim() : undefined;
+
       const slug = item.link.split("/").filter(Boolean).pop() || item.link;
 
       out.push({
         source: "jobicy",
         externalId: slug,
-        title: item.title.slice(0, 200),
-        company: "Remote Company",
+        title: position.slice(0, 200),
+        company: company?.slice(0, 120),
         description: clampText(item.description),
+        budget: extractBudget(`${item.title} ${item.description}`),
         url: item.link,
         location: "Remote",
         contactEmail: extractEmails(item.description)[0],

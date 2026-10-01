@@ -4,7 +4,7 @@
  */
 
 import type { Scout, ScoutSignal } from "./types";
-import { clampText, extractEmails, matchesSkills, safeFetch, stripHtml } from "./filter";
+import { clampText, extractBudget, extractEmails, matchesSkills, safeFetch, stripHtml } from "./filter";
 
 type ArbeitnowItem = {
   slug: string;
@@ -50,6 +50,7 @@ export const arbeitnowScout: Scout = {
         title: item.title.slice(0, 200),
         company: item.company_name?.slice(0, 120) || undefined,
         description: clampText(textDesc),
+        budget: extractBudget(`${item.title} ${textDesc}`),
         url: item.url,
         location: item.remote ? "Remote" : item.location || "Remote",
         tags: item.tags?.slice(0, 15) || [],

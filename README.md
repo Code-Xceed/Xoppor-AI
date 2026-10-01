@@ -1,6 +1,6 @@
 # 🛰 Xoppor AI
 
-Xoppor AI checks 15 job websites for you every 30 minutes.
+Xoppor AI checks 16 job websites for you every 30 minutes.
 When it finds something that matches your skills, it sends it to your Telegram.
 
 The same job posted on several websites is detected and merged into **one alert** — and opportunities listed on multiple boards get a score boost, because that usually means they're real.
@@ -66,7 +66,7 @@ The wizard detects your chat ID by itself and sends you a test message. When you
 npm run pipeline
 ```
 
-This checks all 15 websites, scores every result against your skills, and sends the best ones to Telegram. Takes 1–2 minutes.
+This checks all 16 websites, scores every result against your skills, and sends the best ones to Telegram. Takes 1–2 minutes.
 
 Want to see all results in your browser too?
 

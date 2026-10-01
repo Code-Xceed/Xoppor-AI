@@ -1,16 +1,16 @@
 /**
- * NoDesk scout — remote jobs, software engineering, and digital nomad opportunities.
- * Official public RSS: https://nodesk.co/remote-jobs/index.xml
+ * Working Nomads scout — curated remote engineering & digital nomad positions.
+ * Official public RSS: https://www.workingnomads.com/jobs/rss
  */
 
 import type { Scout, ScoutSignal } from "./types";
 import { clampText, extractBudget, extractEmails, matchesSkills, safeFetch } from "./filter";
 import { parseRssItems } from "./rss";
 
-export const noDeskScout: Scout = {
-  name: "nodesk",
+export const workingNomadsScout: Scout = {
+  name: "workingnomads",
   async run() {
-    const res = await safeFetch("https://nodesk.co/remote-jobs/index.xml");
+    const res = await safeFetch("https://www.workingnomads.com/jobs/rss");
     if (!res || !res.ok) return [];
 
     const xml = await res.text();
@@ -20,7 +20,7 @@ export const noDeskScout: Scout = {
     for (const item of items) {
       if (!matchesSkills(`${item.title} ${item.description}`)) continue;
 
-      // Title is often "Position at Company"
+      // Title format is typically "Position at  Company" or "Position at Company"
       const atIdx = item.title.lastIndexOf(" at ");
       const position = atIdx !== -1 ? item.title.slice(0, atIdx).trim() : item.title;
       const company = atIdx !== -1 ? item.title.slice(atIdx + 4).trim() : undefined;
@@ -28,7 +28,7 @@ export const noDeskScout: Scout = {
       const slug = item.link.split("/").filter(Boolean).pop() || item.link;
 
       out.push({
-        source: "nodesk",
+        source: "workingnomads",
         externalId: slug,
         title: position.slice(0, 200),
         company: company?.slice(0, 120),

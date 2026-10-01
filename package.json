@@ -1,7 +1,7 @@
 {
   "name": "xoppor-ai",
   "version": "1.0.0",
-  "description": "🛰 AI opportunity radar — scouts 15 sources for jobs, freelance gigs, internships, hackathons, conferences & bounties, scores them with AI, and pushes alerts to Telegram. Research radar only — zero outreach.",
+  "description": "🛰 AI opportunity radar — scouts 16 sources for jobs, freelance gigs, internships, hackathons, conferences & bounties, scores them with AI, and pushes alerts to Telegram. Research radar only — zero outreach.",
   "license": "MIT",
   "repository": {
     "type": "git",
