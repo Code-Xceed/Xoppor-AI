@@ -1,4 +1,38 @@
-/** Application configuration read from env with safe defaults. */
+import { existsSync, readFileSync } from "node:fs";
+
+/** Load .env safely if it exists (local development) without failing in CI environments. */
+function loadEnv(): void {
+  if (!existsSync(".env")) return;
+  if (typeof process.loadEnvFile === "function") {
+    try {
+      process.loadEnvFile(".env");
+      return;
+    } catch {
+      // Fallback to manual parsing if process.loadEnvFile encounters an issue
+    }
+  }
+  try {
+    const content = readFileSync(".env", "utf8");
+    for (const line of content.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const eqIdx = trimmed.indexOf("=");
+      if (eqIdx === -1) continue;
+      const key = trimmed.slice(0, eqIdx).trim();
+      let val = trimmed.slice(eqIdx + 1).trim();
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+        val = val.slice(1, -1);
+      }
+      if (process.env[key] === undefined) {
+        process.env[key] = val;
+      }
+    }
+  } catch {
+    // Ignore read errors
+  }
+}
+
+loadEnv();
 
 function env(key: string, fallback = ""): string {
   const v = process.env[key];
